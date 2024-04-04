@@ -1,6 +1,7 @@
 ^ --> Primary key
 * --> Foreign Key
 
+
 Suppliers -------- ( supplier_id^ , name , address , contact_name , contact_email , contact_phone );
 
 Categories ------- ( category_id^ , category_type^ );
