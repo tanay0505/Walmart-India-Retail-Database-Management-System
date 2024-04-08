@@ -9,6 +9,7 @@ DELIMITER ;
 CALL GetCustomerOrders(1);
 select*from CustomerOrders;
 
+
 -- GetSupplierProducts: Retrieves all products supplied by a specific supplier 
 DELIMITER $$
 CREATE FUNCTION GetSupplierProducts(supplier_id_param INT) RETURNS INT
@@ -22,6 +23,7 @@ DELIMITER ;
 
 SELECT GetSupplierProducts(1) AS product_count;
 
+
 -- GetProductReviews: Retrieves all reviews for a specific product
 DELIMITER $$
 CREATE PROCEDURE GetProductReviews(IN prod_id INT)
@@ -31,6 +33,7 @@ END$$
 DELIMITER ;
 
 CALL GetProductReviews(123);
+
 
 -- UpdateProductPrice: Updates the price of a product.
 DELIMITER //
@@ -43,7 +46,9 @@ BEGIN
 END //
 DELIMITER ;
 
+select*from Products;
 CALL UpdateProductPrice(123, 19.99);
+
 
 -- Update Customer Information
 DELIMITER //
@@ -69,6 +74,7 @@ DELIMITER ;
 CALL UpdateCustomerInfo(1,'John Doe', 'john.doe@example.com', '1234567890', '123 Main Street', 'male');
 select*from Customers;
 
+
 -- Search Products
 DELIMITER //
 CREATE PROCEDURE SearchProducts(
@@ -89,6 +95,7 @@ DELIMITER ;
 CALL SearchProducts('shirt', 'Fashion', 10.00, 50.00);
 select*from Products;
 
+
 -- Get Top Selling Products
 DELIMITER //
 CREATE PROCEDURE GetTopSellingProducts(limit_count INT)
@@ -104,6 +111,7 @@ DELIMITER ;
 
 CALL GetTopSellingProducts(10);
 
+
 -- Update Product Quantity
 DELIMITER //
 CREATE PROCEDURE UpdateProductQuantity (
@@ -117,6 +125,7 @@ DELIMITER ;
 
 CALL UpdateProductQuantity(123, 50);
 select*from Products;
+
 
 -- Check Stock Availability
 DELIMITER $$
@@ -134,6 +143,8 @@ END$$
 DELIMITER ;
 
 SELECT CheckStockAvailability(123, 20) AS is_available;
+SELECT CheckStockAvailability(122, 120) AS is_available;
+
 
 -- GetMonthlySalesByStore
 DELIMITER $$
@@ -150,4 +161,30 @@ BEGIN
 END$$
 DELIMITER ;
 
+SELECT GetMonthlySalesByStore(1,4,2024) AS monthly_sales;
+SELECT GetMonthlySalesByStore(2,4,2024) AS monthly_sales;
 SELECT GetMonthlySalesByStore(3,4,2024) AS monthly_sales;
+SELECT GetMonthlySalesByStore(4,4,2024) AS monthly_sales;
+SELECT GetMonthlySalesByStore(5,4,2024) AS monthly_sales;
+
+
+-- GetMonthlyTransactionsByStore
+DELIMITER $$
+CREATE FUNCTION GetMonthlyTransactionsByStore(store_number INT, month_number INT, year_number INT) RETURNS INT
+READS SQL DATA
+BEGIN
+    DECLARE total_transactions INT;
+
+    SELECT COUNT(*) INTO total_transactions
+    FROM Transactions
+    WHERE store_id = store_number AND MONTH(transaction_date) = month_number AND YEAR(transaction_date) = year_number;
+
+    RETURN total_transactions;
+END$$
+DELIMITER ;
+
+SELECT GetMonthlyTransactionsByStore(1, 4, 2024);
+SELECT GetMonthlyTransactionsByStore(2, 4, 2024);
+SELECT GetMonthlyTransactionsByStore(3, 4, 2024);
+SELECT GetMonthlyTransactionsByStore(4, 4, 2024);
+SELECT GetMonthlyTransactionsByStore(5, 4, 2024);
