@@ -22,6 +22,8 @@ CustomerOrders --- ( order_id^ , unit_price , quantity , total_amount ,  order_d
 
 Reviews ---------- ( review_id^ , review_text TEXT, rating , reviewer_name , review_date , product_id* );
 
+Product_Reviews ( product_id*^, review_id*^ );
+
 Supplier_Store ----( supplier_id*^ , store_id INT*^ );
 
 Store_Products ----( store_product_id^ , store_id* , product_id* );
