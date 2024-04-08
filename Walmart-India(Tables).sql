@@ -108,9 +108,13 @@ CREATE TABLE Reviews (
 );
 ALTER TABLE Reviews AUTO_INCREMENT = 1;
 
-ALTER TABLE Products
-ADD COLUMN review_id INT,
-ADD FOREIGN KEY (review_id) REFERENCES Reviews(review_id) ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE Product_Reviews (
+    product_id INT,
+    review_id INT,
+    PRIMARY KEY (product_id, review_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (review_id) REFERENCES Reviews(review_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE Supplier_Store (
     supplier_id INT,
