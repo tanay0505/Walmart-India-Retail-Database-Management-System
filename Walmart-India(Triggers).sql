@@ -39,6 +39,7 @@ DELIMITER ;
 
 select*from Transactions;
 
+
 -- UpdateProductQuantity
 DELIMITER $$
 CREATE TRIGGER AfterSaleInsert
@@ -53,6 +54,8 @@ DELIMITER ;
 
 SELECT * FROM Products WHERE product_id = 1;
 select* from sales;
+select* from Products;
+
 
 -- EnforceMinimumProductPrice
 DELIMITER //
@@ -69,24 +72,30 @@ DELIMITER ;
 INSERT INTO Products (product_name, product_description, product_quantity, product_price, supplier_id, category_id, category_type) VALUES
 ('ABC', 'ABC',100,-0.1,1,1,1);
 
+
 -- UniqueProductName
 DELIMITER //
-CREATE TRIGGER EnforceUniqueProductName BEFORE INSERT ON Products
+CREATE TRIGGER EnforceUniqueProductNamePerStore BEFORE INSERT ON Store_Products
 FOR EACH ROW
 BEGIN
     DECLARE count_products INT;
+    
+    -- Count the number of products with the same name within the same store
     SELECT COUNT(*) INTO count_products
-    FROM Products
-    WHERE product_name = NEW.product_name;
+    FROM Store_Products sp
+    WHERE sp.product_id = NEW.product_id
+    AND sp.store_id = NEW.store_id;
+
+    -- If a product with the same name already exists in the same store, raise an error
     IF count_products > 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Product name must be unique';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Product name must be unique within the store';
     END IF;
 END;
 //
 DELIMITER ;
 
-INSERT INTO Products (product_name, product_description, product_quantity, product_price, supplier_id, category_id, category_type) VALUES
-('LuminaX Pro Laptop', 'Powerful laptop with high-performance specifications, perfect for gaming and professional use.', 100, 1299.99, 1, 1, 'Electronics');
+INSERT INTO Store_Products (store_id, product_id) VALUES (1, 100);
+
 
 -- Ensure Review Rating is between 1 and 5
 DELIMITER //
